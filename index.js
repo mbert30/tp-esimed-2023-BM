@@ -1,14 +1,31 @@
 const express = require('express')
+var cors = require('cors')
+const { Sequelize } = require('sequelize')
+const { Utilisateur } = require('./models/user.model.js')
 const app = express()
 const port = 3000
 let i = 1
+let user = []
 
 app.use(express.json())
+app.use(cors())
 
-let user = []
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
+})
+
+app.use(express.static('public'));
+
+app.get('/test-sqlite', async (req, res) => {
+    const newUser = await Utilisateur.create({
+        firstName: "DAVID",
+        lastName: "Bernard",
+        password: "yeaaa"
+    })
+    const users = await Utilisateur.findAll()
+    console.log(users)
+    res.sendStatus(201)
 })
 
 app.get('/', (req, res) => {
@@ -23,7 +40,7 @@ app.post('/newUser', (req, res) => {
     res.sendStatus(201)
 })
 
-app.get('/allUser', (req, res) => {
+app.get('/users', (req, res) => {
     res.send(user)
 })
 
